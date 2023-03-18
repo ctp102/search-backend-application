@@ -1,0 +1,51 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+    session:
+      cookie:
+        http-only: true
+    register-default-servlet: true
+
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/datajpa
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+jpa:
+  hibernate:
+    ddl-auto: create
+  properties:
+    hibernate:
+#        show_sql: true
+      format_sql: true
+#        default_batch_fetch_size: 100
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+
+# Rest Template
+rest:
+  template:
+    connection-manager:
+      max-total: 100
+      default-max-per-route: 100
+    client-http-request:
+      evict-idle-connections: 10
+      connect-timeout: 30000
+      read-timeout: 30000
+
+search:
+  blog:
+    kakao:
+      end-point: "https://dapi.kakao.com"
+      api-key: "22875c991cab332f34000dff19b0af90"
+    naver:
+      end-point: "BBB"
+      api-key: "CCC"
