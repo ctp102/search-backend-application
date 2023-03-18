@@ -28,6 +28,11 @@ public class KakaoRestClient {
         this.objectMapper   = objectMapper;
     }
 
+    /**
+     * 블로그 검색
+     * @param paramMap
+     * @return
+     */
     public SearchResponse<KakaoBlogSearchResponse> getBlogSearch(Map<String, Object> paramMap) {
 
         URI uri = UriComponentsBuilder

@@ -1,4 +1,4 @@
-package io.search.api.controller.search;
+package io.search.api.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +8,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/search/form";
+        return "redirect:/search/list";
     }
 
 }

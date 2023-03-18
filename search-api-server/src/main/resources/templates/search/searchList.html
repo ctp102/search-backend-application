@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
 <body>
+<div class="container-md">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
+    <h1>Blog Search</h1>
+
+    <div class="container-md mb-3">
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-control" id="keyword" placeholder="검색어를 입력해주세요">
+                <small id="emailHelp" class="form-text text-muted">인기 검색어: </small>
+            </div>
+            <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+    </div>
+
+    <div class="container-md">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" class="col-md-3">Blog</th>
+                <th scope="col" class="col-md-3">Title</th>
+                <th scope="col" class="col-md-3">Contents</th>
+                <th scope="col" class="col-md-3">Thumbnail</th>
+                <th scope="col" class="col-md-3">URL</th>
+                <th scope="col" class="col-md-3">Datetime</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="col-md-3" th:utext="지식센터"></td>[[${data}]]
+                <td class="col-md-3" th:utext="|사진 감성 <b>테스트</b>, 포토샤피엔스|"></td>
+                <td class="col-md-3" th:utext="|아래의 &#34;사진 감성 <b>테스트</b>&#34;을 통해 여러분의 사진감성을 알아보세요. <b>테스트</b>를 통해 나올 수 있는 전체 결과들이 궁금하다면 본문의 마지막 부분을 참고하세요. 1. 사진 감성 <b>테스트</b> 질문 Q1. 나는 사진을 ✔ 자주 찍는다 ✔ 자주 찍지 않는다 Q2. 친구가 찍어준 사진이 맘에 든다. ✔ 프사도 바꾸고 SNS에도 올려야지 ✔ 맘...|"></td>
+                <td class="col-md-3" th:utext="|https://search1.kakaocdn.net/argon/130x130_85_c/HeibLstiLM8|"></td>
+                <td class="col-md-3" th:utext="|http://soju1117.tistory.com/961|"></td>
+                <td class="col-md-3" th:utext="|2023-03-17 10:18:40|"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
 </body>
 </html>
