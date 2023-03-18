@@ -1,4 +1,4 @@
-package io.search.core.search;
+package io.search.core.search.response.kakao;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

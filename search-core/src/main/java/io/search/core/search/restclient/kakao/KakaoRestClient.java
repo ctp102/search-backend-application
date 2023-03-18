@@ -1,8 +1,9 @@
-package io.search.core.util;
+package io.search.core.search.restclient.kakao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.config.properties.SearchProperties;
-import io.search.core.search.KakaoBlogSearchResponse;
+import io.search.core.search.response.kakao.KakaoBlogSearchResponse;
+import io.search.core.search.response.SearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.search.core.config.properties.SearchProperties;
 import io.search.core.config.properties.RestTemplateProperties;
-import io.search.core.util.KakaoRestClient;
+import io.search.core.search.restclient.kakao.KakaoRestClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class SearchController {
 
+    private final
+
     @GetMapping("/search/list")
     public String searchList(Model model) {
         return "search/searchList";
