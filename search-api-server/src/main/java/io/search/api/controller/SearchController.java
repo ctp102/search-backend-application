@@ -34,13 +34,10 @@ public class SearchController {
         }
 
         List<SearchResultDto> searchResults = searchService.searchBlog(searchForm, pagingForm);
-
         List<SearchDomain> searchDomains = searchService.getHotTop10Search();
 
         model.addAttribute("searchResults", searchResults);
         model.addAttribute("searchDomains", searchDomains);
-
-        log.info("searchDomains: {}", searchDomains);
 
         return "search/searchList";
     }
