@@ -1,23 +1,22 @@
 package io.search.core.search.restclient.kakao;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.config.properties.SearchProperties;
 import io.search.core.search.form.SearchForm;
-import io.search.core.search.response.kakao.KakaoBlogSearchResponse;
 import io.search.core.search.response.SearchResponse;
+import io.search.core.search.response.kakao.KakaoBlogSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class KakaoRestClient {

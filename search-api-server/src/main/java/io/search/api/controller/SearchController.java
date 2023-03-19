@@ -4,6 +4,8 @@ import io.search.core.commons.form.PagingForm;
 import io.search.core.search.form.SearchForm;
 import io.search.core.search.restclient.kakao.KakaoRestClient;
 import io.search.core.search.service.SearchService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ public class SearchController {
 
     private final SearchService searchService;
 
+    @ApiOperation(value = "블로그 검색 페이지", notes = "검색 결과 목록도 해당 페이지에 나타낸다.\ntotalCount Param은 페이징 처리를 하기 위함입니다.")
     @GetMapping("/search/list")
     public String searchList(Model model, @ModelAttribute SearchForm searchForm, @ModelAttribute PagingForm pagingForm) {
 
