@@ -1,9 +1,9 @@
 package io.search.api.controller;
 
 import io.search.core.commons.form.PagingForm;
+import io.search.core.search.domain.SearchDomain;
 import io.search.core.search.dto.SearchResultDto;
 import io.search.core.search.form.SearchForm;
-import io.search.core.search.response.SearchResponse;
 import io.search.core.search.service.SearchService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,6 @@ public class SearchController {
     @GetMapping("/search/list")
     public String searchList(Model model, @ModelAttribute SearchForm searchForm, @ModelAttribute PagingForm pagingForm) {
 
-        // 1. query 값 없으면 '검색된 리스트가 없습니다' 표출
         if (StringUtils.isBlank(searchForm.getQuery())) {
             model.addAttribute("searchResults", new ArrayList<>());
             return "search/searchList";
@@ -36,7 +35,12 @@ public class SearchController {
 
         List<SearchResultDto> searchResults = searchService.searchBlog(searchForm, pagingForm);
 
+        List<SearchDomain> searchDomains = searchService.getHotTop10Search();
+
         model.addAttribute("searchResults", searchResults);
+        model.addAttribute("searchDomains", searchDomains);
+
+        log.info("searchDomains: {}", searchDomains);
 
         return "search/searchList";
     }
