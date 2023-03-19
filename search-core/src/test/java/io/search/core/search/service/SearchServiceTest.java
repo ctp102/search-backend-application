@@ -1,6 +1,7 @@
 package io.search.core.search.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.CommonTest;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.search.form.SearchForm;
@@ -13,6 +14,9 @@ class SearchServiceTest extends CommonTest {
     
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
     
     @Test
     public void searchBlog() throws Exception {
@@ -23,8 +27,9 @@ class SearchServiceTest extends CommonTest {
 
         PagingForm pagingForm = new PagingForm();
         SearchResponse<KakaoBlogSearchResponse> response = searchService.searchBlog(searchForm, pagingForm);
-        
-        viewJson(response);
+
+        viewJson(response.getData().getMeta());
+        viewJson(response.getData().getDocuments());
     }
 
 }

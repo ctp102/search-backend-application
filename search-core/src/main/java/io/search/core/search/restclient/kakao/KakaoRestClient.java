@@ -53,38 +53,16 @@ public class KakaoRestClient {
                 .build()
                 .toUri();
 
-        return get(HttpMethod.GET, uri, KakaoBlogSearchResponse.class);
-    }
+        SearchResponse<KakaoBlogSearchResponse> searchResponse = new SearchResponse<>();
+        SearchResponse<KakaoBlogSearchResponse> tempResponse = get(HttpMethod.GET, uri, KakaoBlogSearchResponse.class);
 
-//    /**
-//     * 블로그 검색
-//     * @param searchForm
-//     * @param pagingForm
-//     * @return
-//     */
-//    public SearchResponse<KakaoBlogSearchResponse> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
-//
-//        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-//                .fromUriString(endPoint)
-//                .path("/v2/search/blog")
-//                .encode();
-//
-//        Map<String, Object> paramMap = setParamMap(searchForm, pagingForm);
-//        setQueryParam(uriComponentsBuilder, paramMap);
-//
-//        URI uri = uriComponentsBuilder.build().toUri();
-//
-//        return get(HttpMethod.GET, uri, KakaoBlogSearchResponse.class);
-//    }
-//
-//    private Map<String, Object> setParamMap(SearchForm searchForm, PagingForm pagingForm) {
-//        Map<String, Object> paramMap = new HashMap<>();
-//        paramMap.put("query", searchForm.getQuery());
-//        paramMap.put("sort",  searchForm.getSort());
-//        paramMap.put("page",  pagingForm.getPage());
-//        paramMap.put("size",  pagingForm.getSize());
-//        return paramMap;
-//    }
+        if (tempResponse.getData() != null) {
+            KakaoBlogSearchResponse kakaoBlogSearchResponse = objectMapper.convertValue(tempResponse.getData(), KakaoBlogSearchResponse.class);
+            searchResponse.setData(kakaoBlogSearchResponse);
+        }
+
+        return searchResponse;
+    }
 
     public <T> SearchResponse<T> get(HttpMethod httpMethod, URI uri, Class<T> toValueType) {
         SearchResponse<T> response = new SearchResponse<>();
@@ -109,12 +87,6 @@ public class KakaoRestClient {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "KakaoAK " + apiKey);
         return httpHeaders;
-    }
-
-    private void setQueryParam(UriComponentsBuilder builder, Map<String, Object> paramMap) {
-        for (String key : paramMap.keySet()) {
-            builder.queryParam(key, paramMap.get(key));
-        }
     }
 
 }
