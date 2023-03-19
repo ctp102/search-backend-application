@@ -34,7 +34,7 @@ public class SearchService {
      * @return
      */
     public List<SearchDomain> getHotTop10Search() {
-        return searchRepository.findTop10HotSearch();
+        return searchRepository.findTop10HotSearchByOrderByCountDesc();
     }
 
     public SearchDomain getSearchByQueryAndPlatform(String query, PlatformType platform) {
