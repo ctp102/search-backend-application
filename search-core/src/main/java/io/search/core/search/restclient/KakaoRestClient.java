@@ -1,11 +1,11 @@
-package io.search.core.search.restclient.kakao;
+package io.search.core.search.restclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.config.properties.SearchProperties;
 import io.search.core.search.form.SearchForm;
 import io.search.core.search.response.SearchResponse;
-import io.search.core.search.response.kakao.KakaoBlogSearchResponse;
+import io.search.core.search.response.KakaoBlogSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -57,6 +57,7 @@ public class KakaoRestClient {
 
         if (tempResponse.getData() != null) {
             KakaoBlogSearchResponse kakaoBlogSearchResponse = objectMapper.convertValue(tempResponse.getData(), KakaoBlogSearchResponse.class);
+            pagingForm.setTotalCount(kakaoBlogSearchResponse.getMeta().getTotalCount()); // 여기서 안해도 되나?
             searchResponse.setData(kakaoBlogSearchResponse);
         }
 
