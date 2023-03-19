@@ -1,14 +1,18 @@
 package io.search.core.search.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.commons.form.PagingForm;
+import io.search.core.search.dto.SearchResultDto;
 import io.search.core.search.form.SearchForm;
+import io.search.core.search.response.KakaoBlogSearchResponse;
+import io.search.core.search.response.NaverBlogSearchResponse;
 import io.search.core.search.response.SearchResponse;
-import io.search.core.search.response.kakao.KakaoBlogSearchResponse;
-import io.search.core.search.restclient.kakao.KakaoRestClient;
+import io.search.core.search.restclient.KakaoRestClient;
+import io.search.core.search.restclient.NaverRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,16 +20,25 @@ import org.springframework.stereotype.Service;
 public class SearchService {
 
     private final KakaoRestClient kakaoRestClient;
+    private final NaverRestClient naverRestClient;
 
-    // kakaoRestClient, naverRestClient 모두 처리하기 위해 제네릭 메서드로 처리
-    public <T> SearchResponse<T> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
+    public List<SearchResultDto> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
-        SearchResponse<KakaoBlogSearchResponse> response = kakaoRestClient.searchBlog(searchForm, pagingForm);
+        SearchResponse<?> searchResponse = kakaoRestClient.searchBlog(searchForm, pagingForm);
 
-        // TODO: [2023-03-18] error 있으면 naver api로 조회
-        // SearchResponse<NaverBlogSearchResponse> response = naverRestClient.searchBlog(searchForm, pagingForm);
+        if (searchResponse.getData() == null) {
+            searchResponse = naverRestClient.searchBlog(searchForm, pagingForm);
+            NaverBlogSearchResponse naverBlogSearchResponse = (NaverBlogSearchResponse) searchResponse.getData();
+        }
 
-        return (SearchResponse<T>) response;
+        KakaoBlogSearchResponse kakaoBlogSearchResponse = (KakaoBlogSearchResponse) searchResponse.getData();
+
+        List<SearchResultDto> searchResults = kakaoBlogSearchResponse.getDocuments()
+                .stream()
+                .map(SearchResultDto::from)
+                .toList();
+
+        return searchResults;
     }
 
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 public class PagingForm implements Paging {
 
     private int page = 1;
-    private int size = 20;
+    private int size = 10;
     private long totalCount;
 
 }

@@ -1,20 +1,25 @@
 package io.search.api.controller;
 
 import io.search.core.commons.form.PagingForm;
+import io.search.core.search.dto.SearchResultDto;
 import io.search.core.search.form.SearchForm;
-import io.search.core.search.restclient.kakao.KakaoRestClient;
+import io.search.core.search.response.SearchResponse;
 import io.search.core.search.service.SearchService;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class SearchController {
 
     private final SearchService searchService;
@@ -25,12 +30,13 @@ public class SearchController {
 
         // 1. query 값 없으면 '검색된 리스트가 없습니다' 표출
         if (StringUtils.isBlank(searchForm.getQuery())) {
+            model.addAttribute("searchResults", new ArrayList<>());
             return "search/searchList";
         }
 
-        searchService.searchBlog(searchForm, pagingForm);
+        List<SearchResultDto> searchResults = searchService.searchBlog(searchForm, pagingForm);
 
-        pagingForm.setTotalCount(157);
+        model.addAttribute("searchResults", searchResults);
 
         return "search/searchList";
     }
