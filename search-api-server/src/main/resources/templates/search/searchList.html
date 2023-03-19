@@ -14,7 +14,7 @@
                             <mx-auto>
                                 <input name="query" type="text" class="form-control" placeholder="검색어 입력" th:value="${searchForm.query}">
                             </mx-auto>
-                            <button class="btn btn-success" type="submit" onclick="searchKeyword()">검색</button>
+                            <button class="btn btn-success" type="submit" onclick="searchQuery()">검색</button>
                             <input name="sort" type="hidden" th:value="${searchForm.sort}" />
                         </div>
                     </form>
@@ -28,6 +28,21 @@
                         <small class="form-text text-muted" th:text="|${stat.count}. ${searchDomain.getQuery()}(${searchDomain.getCount()})|"></small>
                     </div>
                 </th:block>
+
+                <th:block th:if="${#strings.equals('accuracy', searchForm.sort)}">
+<!--                    <span class="btn btn-primary" th:text="|정확도 순|" onclick="sort('accuracy')"></span>-->
+<!--                    <span class="btn btn-light" th:text="|최신 순|" onclick="sort('recency')"></span>-->
+                    <span class="btn btn-primary sort-button" th:text="|정확도 순|"></span>
+                    <span class="btn btn-light sort-button" th:text="|최신 순|"></span>
+                </th:block>
+
+                <th:block th:if="${#strings.equals('recency', searchForm.sort)}">
+<!--                    <span class="btn btn-light" th:text="|정확도 순|" onclick="sort('accuracy')"></span>-->
+<!--                    <span class="btn btn-primary" th:text="|최신 순|" onclick="sort('recency')"></span>-->
+                    <span class="btn btn-light sort-button" th:text="|정확도 순|" onclick="sort('accuracy')"></span>
+                    <span class="btn btn-primary sort-button" th:text="|최신 순|" onclick="sort('recency')"></span>
+                </th:block>
+
             </div>
 
             <div class="container-md">
@@ -68,7 +83,55 @@
             </div>
         </div>
     </body>
-    <script>
+    <script th:inline="javascript">
+        // $(function() {
+            setPageSize();
+
+            $('.sort-button').on('click', function() {
+                console.log($(this));
+            })
+
+            function sort(type) {
+                let url = new URL(decodeURIComponent(location.href));
+                const urlParams = url.searchParams;
+
+                const sortType = urlParams.get('sort');
+
+                url = url.replace(sortType, type);
+                location.href = url;
+            }
+
+            function setPageSize() {
+                const url = new URL(location.href);
+                const urlParams = url.searchParams;
+                const defaultPageSize = 10;
+
+                const pageSize = urlParams.get('size');
+                const page = urlParams.get('page');
+                const query = urlParams.get('query');
+                const sort = urlParams.get('sort');
+
+                if (pageSize) {
+                    $('.selectpicker').val(pageSize);
+                } else {
+                    $('.selectpicker').val(defaultPageSize);
+                }
+
+                $('.selectpicker').change(function() {
+                    if (query && sort && page) {
+                        location.href = `?query=${query}&sort=${sort}&page=${page}&size=${$(this).val()}`;
+                        return;
+                    }
+
+                    if (query && sort) {
+                        location.href = `?query=${query}&sort=${sort}&size=${$(this).val()}`;
+                        return;
+                    }
+
+                    alert('검색을 한 이후 값을 설정해주세요.');
+                });
+            }
+        // });
 
     </script>
 </html>
