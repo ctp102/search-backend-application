@@ -2,7 +2,7 @@ package io.search.api.utils;
 
 import io.search.core.commons.form.Paging;
 import lombok.Data;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -84,7 +84,7 @@ public class Pagination {
 
             String[] params = StringUtils.split(url.substring(idx + 1) , "&");
 
-            if (params != null) {
+//            if (params != null) {
                 for (String param : params) {
                     href.append((href.toString().contains("?")) ? "&" : "?");
                     if (!param.startsWith("page=")) {
@@ -93,7 +93,7 @@ public class Pagination {
                         href.append("page=").append(pageNo);
                     }
                 }
-            }
+//            }
 
         } else {
             href.append(url);

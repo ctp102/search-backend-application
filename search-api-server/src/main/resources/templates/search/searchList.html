@@ -11,12 +11,10 @@
                 <form class="form" id="search-form" name="search-form">
                     <div class="mx-quto input-group mt-5">
                         <mx-auto>
-                            <input name="query" type="text" class="form-control" placeholder="검색어 입력">
+                            <input name="query" type="text" class="form-control" placeholder="검색어 입력" th:value="${searchForm.query}">
                         </mx-auto>
                         <button class="btn btn-success" type="submit" onclick="searchKeyword()">검색</button>
-
-                        <!-- 변수로 받기 -->
-                        <input name="sort" type="hidden" value="accuracy" />
+                        <input name="sort" type="hidden" th:value="${searchForm.sort}" />
                     </div>
                 </form>
             </div>

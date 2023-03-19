@@ -5,11 +5,13 @@ import io.search.core.CommonTest;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.search.dto.SearchResultDto;
 import io.search.core.search.form.SearchForm;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+@Slf4j
 class SearchServiceTest extends CommonTest {
     
     @Autowired
