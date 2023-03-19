@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.search.core.config.properties.SearchProperties;
 import io.search.core.config.properties.RestTemplateProperties;
-import io.search.core.search.restclient.kakao.KakaoRestClient;
+import io.search.core.search.restclient.KakaoRestClient;
+import io.search.core.search.restclient.NaverRestClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -74,9 +75,15 @@ public class CoreConfig {
         return objectMapper;
     }
 
+    // TODO: [2023-03-19] RestClient로 공통처리
     @Bean
     public KakaoRestClient kakaoRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
         return new KakaoRestClient(searchProperties, restTemplate, objectMapper);
+    }
+
+    @Bean
+    public NaverRestClient naverRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
+        return new NaverRestClient(searchProperties, restTemplate, objectMapper);
     }
 
 }
