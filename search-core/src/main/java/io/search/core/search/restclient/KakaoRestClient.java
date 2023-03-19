@@ -1,5 +1,6 @@
 package io.search.core.search.restclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.config.properties.SearchProperties;
@@ -57,7 +58,7 @@ public class KakaoRestClient {
 
         if (tempResponse.getData() != null) {
             KakaoBlogSearchResponse kakaoBlogSearchResponse = objectMapper.convertValue(tempResponse.getData(), KakaoBlogSearchResponse.class);
-            pagingForm.setTotalCount(kakaoBlogSearchResponse.getMeta().getTotalCount()); // 여기서 안해도 되나?
+            pagingForm.setTotalCount(kakaoBlogSearchResponse.getMeta().getTotalCount());
             searchResponse.setData(kakaoBlogSearchResponse);
         }
 
@@ -77,6 +78,11 @@ public class KakaoRestClient {
             response.setData(responseEntity.getBody());
         } catch (HttpStatusCodeException e) {
             log.error("[HttpStatusCodeException]: {} ", e.getMessage());
+            try {
+                response.setError(objectMapper.readValue(e.getResponseBodyAsString(), SearchResponse.Error.class));
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException(ex);
+            }
         } catch (Exception e) {
             log.error("[Exception] ", e);
         }
