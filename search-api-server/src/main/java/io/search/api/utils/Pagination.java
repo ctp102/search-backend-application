@@ -4,7 +4,6 @@ import io.search.core.commons.form.Paging;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
@@ -34,7 +33,10 @@ public class Pagination {
         if (page < 1) page = 1;
         if (size < 1) size = 10;
         if (pageGroupSize < 1) pageGroupSize = 10;
-        if (totalCount == 0) return;
+        if (totalCount == 0) {
+            initialize(page, size);
+            return;
+        }
 
         this.pageNo = page;
         this.pageSize = size;
@@ -72,6 +74,18 @@ public class Pagination {
         this.setFinalPageNo(finalPage); // 마지막 페이지 번호
     }
 
+    private void initialize(int page, int size) {
+        this.pageNo = page;
+        this.pageSize = size;
+        this.totalCount = 0;
+        this.firstPageNo = 1;
+        this.finalPageNo = 1;
+        this.startPageNo = 1;
+        this.endPageNo = 1;
+        this.prevPageNo = 1;
+        this.nextPageNo = 1;
+    }
+
     public String getHref(int pageNo) {
 
         StringBuilder href = new StringBuilder();
@@ -84,16 +98,14 @@ public class Pagination {
 
             String[] params = StringUtils.split(url.substring(idx + 1) , "&");
 
-//            if (params != null) {
-                for (String param : params) {
-                    href.append((href.toString().contains("?")) ? "&" : "?");
-                    if (!param.startsWith("page=")) {
-                        href.append(param);
-                    } else {
-                        href.append("page=").append(pageNo);
-                    }
+            for (String param : params) {
+                href.append((href.toString().contains("?")) ? "&" : "?");
+                if (!param.startsWith("page=")) {
+                    href.append(param);
+                } else {
+                    href.append("page=").append(pageNo);
                 }
-//            }
+            }
 
         } else {
             href.append(url);
