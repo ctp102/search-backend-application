@@ -14,6 +14,10 @@ public class ThymeleafUtils {
     }
 
     public int getRowNum(PagingForm pagingForm, int index) {
+        return ((pagingForm.getPage() - 1) * pagingForm.getSize()) + index + 1;
+    }
+
+    public int getRowNumReverse(PagingForm pagingForm, int index) {
         return (int)pagingForm.getTotalCount() - ((pagingForm.getPage() - 1) * pagingForm.getSize()) - index;
     }
 

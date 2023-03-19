@@ -19,12 +19,22 @@
                         </div>
                     </form>
                 </div>
+                <th:block th:if="${searchResults.isEmpty()}">
+                    <small class="form-text text-muted">인기 검색어가 존재하지 않습니다.</small>
+                </th:block>
+                <th:block th:unless="${searchResults.isEmpty()}">
+                    <div>인기 검색어</div>
+                    <div class="form-text text-muted" th:each="searchDomain, stat : ${searchDomains}">
+                        <small class="form-text text-muted" th:text="|${stat.count}. ${searchDomain.getQuery()}(${searchDomain.getCount()})|"></small>
+                    </div>
+                </th:block>
             </div>
 
             <div class="container-md">
                 <table class="table table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr class="text-center">
+                            <th scope="col" class="col-md-3">No</th>
                             <th scope="col" class="col-md-3">Blog</th>
                             <th scope="col" class="col-md-3">Title</th>
                             <th scope="col" class="col-md-3">Contents</th>
@@ -41,6 +51,7 @@
                         </th:block>
                         <th:block th:unless="${searchResults.isEmpty()}">
                             <tr th:each="searchResult, stat : ${searchResults}">
+                                <td class="col-md-3" th:text="${@thymeleafUtils.getRowNum(pagingForm, stat.index)}">No</td>
                                 <td class="col-md-3" th:utext="${searchResult.blogName}">블로그 이름</td>
                                 <td class="col-md-3" th:utext="${searchResult.title}">포스팅 제목</td>
                                 <td class="col-md-3" th:utext="${searchResult.contents}">포스팅 내용</td>
