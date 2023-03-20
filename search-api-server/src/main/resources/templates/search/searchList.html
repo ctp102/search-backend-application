@@ -29,20 +29,6 @@
                     </div>
                 </th:block>
 
-                <th:block th:if="${#strings.equals('accuracy', searchForm.sort)}">
-<!--                    <span class="btn btn-primary" th:text="|정확도 순|" onclick="sort('accuracy')"></span>-->
-<!--                    <span class="btn btn-light" th:text="|최신 순|" onclick="sort('recency')"></span>-->
-                    <span class="btn btn-primary sort-button" th:text="|정확도 순|"></span>
-                    <span class="btn btn-light sort-button" th:text="|최신 순|"></span>
-                </th:block>
-
-                <th:block th:if="${#strings.equals('recency', searchForm.sort)}">
-<!--                    <span class="btn btn-light" th:text="|정확도 순|" onclick="sort('accuracy')"></span>-->
-<!--                    <span class="btn btn-primary" th:text="|최신 순|" onclick="sort('recency')"></span>-->
-                    <span class="btn btn-light sort-button" th:text="|정확도 순|" onclick="sort('accuracy')"></span>
-                    <span class="btn btn-primary sort-button" th:text="|최신 순|" onclick="sort('recency')"></span>
-                </th:block>
-
             </div>
 
             <div class="container-md">
@@ -65,6 +51,15 @@
                             </tr>
                         </th:block>
                         <th:block th:unless="${searchResults.isEmpty()}">
+                            <th:block th:if="${#strings.equals('accuracy', searchForm.sort)}">
+                                <span class="btn btn-primary" th:text="|정확도 순|" onclick="sort('accuracy')"></span>
+                                <span class="btn btn-light" th:text="|최신 순|" onclick="sort('recency')"></span>
+                            </th:block>
+
+                            <th:block th:if="${#strings.equals('recency', searchForm.sort)}">
+                                <span class="btn btn-light" th:text="|정확도 순|" onclick="sort('accuracy')"></span>
+                                <span class="btn btn-primary" th:text="|최신 순|" onclick="sort('recency')"></span>
+                            </th:block>
                             <tr th:each="searchResult, stat : ${searchResults}">
                                 <td class="col-md-3" th:text="${@thymeleafUtils.getRowNum(pagingForm, stat.index)}">No</td>
                                 <td class="col-md-3" th:utext="${searchResult.blogName}">블로그 이름</td>
@@ -84,54 +79,51 @@
         </div>
     </body>
     <script th:inline="javascript">
-        // $(function() {
-            setPageSize();
+        setPageSize();
 
-            $('.sort-button').on('click', function() {
-                console.log($(this));
-            })
+        // 정렬 조건 변경
+        function sort(type) {
+            let urlStr = decodeURIComponent(location.href);
+            let urlObj = new URL(urlStr);
 
-            function sort(type) {
-                let url = new URL(decodeURIComponent(location.href));
-                const urlParams = url.searchParams;
+            const urlParams = urlObj.searchParams;
+            const originSortType = urlParams.get('sort');
 
-                const sortType = urlParams.get('sort');
+            urlStr = urlStr.replace(originSortType, type);
+            location.href = urlStr;
+        }
 
-                url = url.replace(sortType, type);
-                location.href = url;
+        // 페이징 크기 변경
+        function setPageSize() {
+            const url = new URL(location.href);
+            const urlParams = url.searchParams;
+            const defaultPageSize = 10;
+
+            const pageSize = urlParams.get('size');
+            const page = urlParams.get('page');
+            const query = urlParams.get('query');
+            const sort = urlParams.get('sort');
+
+            if (pageSize) {
+                $('.selectpicker').val(pageSize);
+            } else {
+                $('.selectpicker').val(defaultPageSize);
             }
 
-            function setPageSize() {
-                const url = new URL(location.href);
-                const urlParams = url.searchParams;
-                const defaultPageSize = 10;
-
-                const pageSize = urlParams.get('size');
-                const page = urlParams.get('page');
-                const query = urlParams.get('query');
-                const sort = urlParams.get('sort');
-
-                if (pageSize) {
-                    $('.selectpicker').val(pageSize);
-                } else {
-                    $('.selectpicker').val(defaultPageSize);
+            $('.selectpicker').change(function() {
+                if (query && sort && page) {
+                    location.href = `?query=${query}&sort=${sort}&page=${page}&size=${$(this).val()}`;
+                    return;
                 }
 
-                $('.selectpicker').change(function() {
-                    if (query && sort && page) {
-                        location.href = `?query=${query}&sort=${sort}&page=${page}&size=${$(this).val()}`;
-                        return;
-                    }
+                if (query && sort) {
+                    location.href = `?query=${query}&sort=${sort}&size=${$(this).val()}`;
+                    return;
+                }
 
-                    if (query && sort) {
-                        location.href = `?query=${query}&sort=${sort}&size=${$(this).val()}`;
-                        return;
-                    }
-
-                    alert('검색을 한 이후 값을 설정해주세요.');
-                });
-            }
-        // });
+                alert('검색을 한 이후 값을 설정해주세요.');
+            });
+        }
 
     </script>
 </html>
