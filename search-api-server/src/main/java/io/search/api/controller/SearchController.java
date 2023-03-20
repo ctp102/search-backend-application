@@ -30,6 +30,7 @@ public class SearchController {
 
         if (StringUtils.isBlank(searchForm.getQuery())) {
             model.addAttribute("searchResults", new ArrayList<>());
+            model.addAttribute("searchDomains", searchService.getHotTop10Search());
             return "search/searchList";
         }
 

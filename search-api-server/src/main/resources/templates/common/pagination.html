@@ -10,11 +10,12 @@
           <select class="selectpicker form-select form-select-sm" th:data-selected="${pagination.pageSize}">
             <option value="10">10</option>
             <option value="20">20</option>
+            <option value="20">25</option>
             <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="300">300</option>
-            <option value="500">500</option>
+<!--            <option value="100">100</option>-->
+<!--            <option value="200">200</option>-->
+<!--            <option value="300">300</option>-->
+<!--            <option value="500">500</option>-->
           </select>
         </div>
       </div>
@@ -103,24 +104,4 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    $(function () {
-
-      $('.selectpicker').each(function () {
-        let th = $(this);
-        let val = th.data('selected');
-
-        th.selectpicker('val', val);
-
-        th.change(function () {
-          let selVal = $(this).val();
-          if ($('#pageSize').length == 0) {
-            $("form[name='searchForm']").append("<input type='hidden' id='pageSize' name='pageSize'>");
-          }
-          $("form[name='searchForm']").find('#pageSize').val(selVal);
-          $("form[name='searchForm']").get(0).submit();
-        });
-      });
-    });
-  </script>
 </th:block>
