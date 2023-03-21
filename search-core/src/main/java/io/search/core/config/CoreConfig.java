@@ -7,6 +7,7 @@ import io.search.core.config.properties.SearchProperties;
 import io.search.core.config.properties.RestTemplateProperties;
 import io.search.core.search.restclient.KakaoRestClient;
 import io.search.core.search.restclient.NaverRestClient;
+import io.search.core.search.restclient.RestClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
@@ -76,13 +77,13 @@ public class CoreConfig {
         return objectMapper;
     }
 
-    @Bean
-    public KakaoRestClient kakaoRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    @Bean(name = "kakaoRestClient")
+    public RestClient kakaoRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
         return new KakaoRestClient(searchProperties, restTemplate, objectMapper);
     }
 
-    @Bean
-    public NaverRestClient naverRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    @Bean(name = "naverRestClient")
+    public RestClient naverRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
         return new NaverRestClient(searchProperties, restTemplate, objectMapper);
     }
 

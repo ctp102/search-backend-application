@@ -1,6 +1,7 @@
 package io.search.core.search.dto;
 
 import io.search.core.search.response.KakaoBlogSearchResponse;
+import io.search.core.search.response.NaverBlogSearchResponse;
 import lombok.Data;
 
 @Data
@@ -23,6 +24,17 @@ public class SearchResultDto {
         searchResultDto.setThumbnail(document.getThumbnail());
         searchResultDto.setPostUrl(document.getUrl());
         searchResultDto.setCreateDt(document.getDatetime());
+        return searchResultDto;
+    }
+
+    public static SearchResultDto from(NaverBlogSearchResponse.Item item) {
+        SearchResultDto searchResultDto = new SearchResultDto();
+        searchResultDto.setBlogName(item.getBloggerName());
+        searchResultDto.setTitle(item.getTitle());
+        searchResultDto.setContents(item.getDescription());
+        searchResultDto.setThumbnail(null);
+        searchResultDto.setPostUrl(item.getLink());
+        searchResultDto.setCreateDt(item.getPostDate());
         return searchResultDto;
     }
 

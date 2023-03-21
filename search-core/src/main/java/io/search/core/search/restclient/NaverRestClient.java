@@ -19,16 +19,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @Slf4j
-public class NaverRestClient {
+public class NaverRestClient implements RestClient {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final String endPoint;
-    private final String apiKey;
+    private final String clientId;
+    private final String clientSecret;
 
     public NaverRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.endPoint       = searchProperties.getKakao().getEndPoint();
-        this.apiKey         = searchProperties.getKakao().getApiKey();
+        this.endPoint       = searchProperties.getNaver().getEndPoint();
+        this.clientId       = searchProperties.getNaver().getClientId();
+        this.clientSecret   = searchProperties.getNaver().getClientSecret();
         this.restTemplate   = restTemplate;
         this.objectMapper   = objectMapper;
     }
@@ -39,6 +41,7 @@ public class NaverRestClient {
      * @param pagingForm
      * @return
      */
+    @SuppressWarnings("unchecked")
     public SearchResponse<NaverBlogSearchResponse> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
         URI uri = UriComponentsBuilder
@@ -53,20 +56,21 @@ public class NaverRestClient {
                 .toUri();
 
         SearchResponse<NaverBlogSearchResponse> searchResponse = new SearchResponse<>();
-        SearchResponse<NaverBlogSearchResponse> tempResponse = get(HttpMethod.GET, uri, NaverBlogSearchResponse.class);
+        SearchResponse<NaverBlogSearchResponse> tempResponse = get(HttpMethod.GET, uri);
 
         if (tempResponse.getData() != null) {
             NaverBlogSearchResponse naverBlogSearchResponse = objectMapper.convertValue(tempResponse.getData(), NaverBlogSearchResponse.class);
+            pagingForm.setTotalCount(naverBlogSearchResponse.getTotal());
             searchResponse.setData(naverBlogSearchResponse);
         }
 
         return searchResponse;
     }
 
-    public <T> SearchResponse<T> get(HttpMethod httpMethod, URI uri, Class<T> toValueType) {
+    public <T> SearchResponse<T> get(HttpMethod httpMethod, URI uri) {
         SearchResponse<T> response = new SearchResponse<>();
 
-        HttpHeaders httpHeaders = getHttpHeaders(apiKey);
+        HttpHeaders httpHeaders = getHttpHeaders(clientId, clientSecret);
         RequestEntity<?> requestEntity = new RequestEntity<>(httpHeaders, httpMethod, uri);
 
         log.info("[GET] REST CALL: {}", uri);
@@ -82,9 +86,10 @@ public class NaverRestClient {
         return response;
     }
 
-    public HttpHeaders getHttpHeaders(String apiKey) {
+    public HttpHeaders getHttpHeaders(String clientId, String clientSecret) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Naver " + apiKey);
+        httpHeaders.add("X-Naver-Client-Id", clientId);
+        httpHeaders.add("X-Naver-Client-Secret", clientSecret);
         return httpHeaders;
     }
 

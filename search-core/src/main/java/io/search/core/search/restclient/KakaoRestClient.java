@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 
 @Slf4j
-public class KakaoRestClient {
+public class KakaoRestClient implements RestClient {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -40,6 +40,7 @@ public class KakaoRestClient {
      * @param pagingForm
      * @return
      */
+    @SuppressWarnings("unchecked")
     public SearchResponse<KakaoBlogSearchResponse> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
         URI uri = UriComponentsBuilder
@@ -54,7 +55,7 @@ public class KakaoRestClient {
                 .toUri();
 
         SearchResponse<KakaoBlogSearchResponse> searchResponse = new SearchResponse<>();
-        SearchResponse<KakaoBlogSearchResponse> tempResponse = get(HttpMethod.GET, uri, KakaoBlogSearchResponse.class);
+        SearchResponse<KakaoBlogSearchResponse> tempResponse = get(HttpMethod.GET, uri);
 
         if (tempResponse.getData() != null) {
             KakaoBlogSearchResponse kakaoBlogSearchResponse = objectMapper.convertValue(tempResponse.getData(), KakaoBlogSearchResponse.class);
@@ -65,7 +66,7 @@ public class KakaoRestClient {
         return searchResponse;
     }
 
-    public <T> SearchResponse<T> get(HttpMethod httpMethod, URI uri, Class<T> toValueType) {
+    public <T> SearchResponse<T> get(HttpMethod httpMethod, URI uri) {
         SearchResponse<T> response = new SearchResponse<>();
 
         HttpHeaders httpHeaders = getHttpHeaders(apiKey);
