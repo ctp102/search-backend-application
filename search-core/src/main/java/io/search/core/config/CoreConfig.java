@@ -7,9 +7,12 @@ import io.search.core.config.properties.SearchProperties;
 import io.search.core.config.properties.RestTemplateProperties;
 import io.search.core.search.restclient.KakaoRestClient;
 import io.search.core.search.restclient.NaverRestClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -20,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class CoreConfig {
@@ -28,16 +32,16 @@ public class CoreConfig {
     public RestTemplate restTemplate(RestTemplateProperties restTemplateProperties) {
 
         // 1. ClientHttpRequestFactory requestFactory
-//        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-//        connectionManager.setDefaultMaxPerRoute(restTemplateConfig.getConnectionManager().getDefaultMaxPerRoute());
-//        connectionManager.setMaxTotal(restTemplateConfig.getConnectionManager().getMaxTotal());
-//
-//        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().setConnectionManager(connectionManager)
-//                .evictIdleConnections(restTemplateConfig.getClientHttpRequest().getEvictIdleConnections(), TimeUnit.SECONDS)
-//                .build());
-//
-//        factory.setConnectTimeout(restTemplateConfig.getClientHttpRequest().getConnectTimeout());
-//        factory.setReadTimeout(restTemplateConfig.getClientHttpRequest().getReadTimeout());
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        connectionManager.setDefaultMaxPerRoute(restTemplateProperties.getConnectionManager().getDefaultMaxPerRoute());
+        connectionManager.setMaxTotal(restTemplateProperties.getConnectionManager().getMaxTotal());
+
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().setConnectionManager(connectionManager)
+                .evictIdleConnections(restTemplateProperties.getClientHttpRequest().getEvictIdleConnections(), TimeUnit.SECONDS)
+                .build());
+
+        factory.setConnectTimeout(restTemplateProperties.getClientHttpRequest().getConnectTimeout());
+        factory.setReadTimeout(restTemplateProperties.getClientHttpRequest().getReadTimeout());
 
         // 2. MessageConverters
         MappingJackson2HttpMessageConverter jsonHttpMessageConverter = new MappingJackson2HttpMessageConverter(objectMapper());
@@ -45,11 +49,9 @@ public class CoreConfig {
         jsonHttpMessageConverter.setPrefixJson(false);
 
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        stringConverter.setWriteAcceptCharset(false);  // see SPR-7316
-        //stringConverter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/xml"));
+        stringConverter.setWriteAcceptCharset(false);
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
-        //byteArrayHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG, MediaType.IMAGE_GIF));
 
         FormHttpMessageConverter formHttpMessageConverter = new FormHttpMessageConverter();
         formHttpMessageConverter.setCharset(StandardCharsets.UTF_8);
@@ -61,8 +63,7 @@ public class CoreConfig {
         httpMessageConverters.add(formHttpMessageConverter);
 
         // 3. RestTemplate
-//        RestTemplate restTemplate = new RestTemplate(factory);
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(factory);
         restTemplate.setMessageConverters(httpMessageConverters);
         return restTemplate;
     }
@@ -75,7 +76,6 @@ public class CoreConfig {
         return objectMapper;
     }
 
-    // TODO: [2023-03-19] RestClient로 공통처리
     @Bean
     public KakaoRestClient kakaoRestClient(SearchProperties searchProperties, RestTemplate restTemplate, ObjectMapper objectMapper) {
         return new KakaoRestClient(searchProperties, restTemplate, objectMapper);

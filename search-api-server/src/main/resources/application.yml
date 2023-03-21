@@ -36,8 +36,8 @@ logging:
 rest:
   template:
     connection-manager:
-      max-total: 100
       default-max-per-route: 100
+      max-total: 100
     client-http-request:
       evict-idle-connections: 10
       connect-timeout: 30000
