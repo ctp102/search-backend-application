@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @Transactional
@@ -26,7 +26,7 @@ class SearchServiceTest extends CommonTest {
     private SearchService searchService;
 
     @BeforeEach
-    @DisplayName("")
+    @DisplayName("테스트 데이터 셋업")
     public void setUp() throws Exception {
 
         String query = "개발자";
@@ -34,8 +34,12 @@ class SearchServiceTest extends CommonTest {
 
         for (int i = 10; i >= 0; i--) {
             for (int j = 0; j < i; j++) {
-                SearchDomain findSearchDomain = searchService.getSearchByQueryAndPlatform(query + i, platform);
-                searchService.insertSearch(findSearchDomain, query + i, platform);
+                SearchDomain searchDomain = searchService.getSearchByQueryAndPlatform(query + i, platform);
+                if (searchDomain == null) {
+                    searchService.insertSearch(new SearchDomain(query + i, platform));
+                } else {
+                    searchDomain.increaseCount();
+                }
             }
         }
 

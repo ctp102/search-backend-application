@@ -1,5 +1,7 @@
 package io.search.core.search.service;
 
+import io.search.core.commons.enums.CustomCommonResponseCodes;
+import io.search.core.commons.exception.CustomException;
 import io.search.core.commons.form.PagingForm;
 import io.search.core.search.domain.SearchDomain;
 import io.search.core.search.dto.SearchResultDto;
@@ -9,10 +11,9 @@ import io.search.core.search.repository.SearchRepository;
 import io.search.core.search.response.KakaoBlogSearchResponse;
 import io.search.core.search.response.NaverBlogSearchResponse;
 import io.search.core.search.response.SearchResponse;
-import io.search.core.search.restclient.KakaoRestClient;
-import io.search.core.search.restclient.NaverRestClient;
-import lombok.RequiredArgsConstructor;
+import io.search.core.search.restclient.RestClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class SearchService {
 
     private final SearchRepository searchRepository;
-    private final KakaoRestClient kakaoRestClient;
-    private final NaverRestClient naverRestClient;
+    private final RestClient kakaoRestClient;
+    private final RestClient naverRestClient;
+
+    public SearchService(SearchRepository searchRepository, @Qualifier("kakaoRestClient") RestClient kakaoRestClient, @Qualifier("naverRestClient") RestClient naverRestClient) {
+        this.searchRepository = searchRepository;
+        this.kakaoRestClient = kakaoRestClient;
+        this.naverRestClient = naverRestClient;
+    }
 
     /**
      * 인기 검색어 조회
@@ -53,16 +59,9 @@ public class SearchService {
      * 검색어 저장
      *
      * @param searchDomain
-     * @param query
-     * @param platform
      */
-    public void insertSearch(SearchDomain searchDomain, String query, PlatformType platform) {
-
-        if (searchDomain == null) {
-            searchRepository.save(new SearchDomain(query, platform));
-        } else {
-            searchDomain.increaseCount();
-        }
+    public void insertSearch(SearchDomain searchDomain) {
+        searchRepository.save(searchDomain);
     }
 
     /**
@@ -74,31 +73,50 @@ public class SearchService {
      */
     public List<SearchResultDto> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
+        String query = searchForm.getQuery();
+        PlatformType platform = PlatformType.KAKAO;
+
         SearchResponse<?> searchResponse = kakaoRestClient.searchBlog(searchForm, pagingForm);
 
         // 카카오 검색 API에서 데이터를 불러오지 못하는 경우 네이버 검색 API 호출
         if (searchResponse == null || searchResponse.getData() == null) {
-            searchResponse = naverRestClient.searchBlog(searchForm, pagingForm);
-            NaverBlogSearchResponse naverBlogSearchResponse = (NaverBlogSearchResponse) searchResponse.getData();
+            platform = PlatformType.NAVER;
 
-            return getSearchResults(naverBlogSearchResponse);
+            searchForm.changeSortType(platform);
+            searchResponse = naverRestClient.searchBlog(searchForm, pagingForm);
         }
 
-        KakaoBlogSearchResponse kakaoBlogSearchResponse = (KakaoBlogSearchResponse) searchResponse.getData();
-
-        List<SearchResultDto> searchResults = getSearchResults(kakaoBlogSearchResponse);
+        List<SearchResultDto> searchResults = getSearchResults(searchResponse.getData());
         if (searchResults.isEmpty()) {
             return new ArrayList<>();
         }
 
-        String query = searchForm.getQuery();
-        PlatformType platform = PlatformType.KAKAO;
-        
         SearchDomain searchDomain = getSearchByQueryAndPlatform(query, platform);
-        
-        insertSearch(searchDomain, query, platform);
+
+        if (searchDomain == null) {
+            insertSearch(new SearchDomain(query, platform));
+        } else {
+            searchDomain.increaseCount();
+        }
 
         return searchResults;
+    }
+
+    /**
+     * 검색 API 결과를 SearchResultDto 리스트로 변환
+     *
+     * @param data
+     * @return
+     */
+    private List<SearchResultDto> getSearchResults(Object data) {
+
+        if (data instanceof KakaoBlogSearchResponse) {
+            return getSearchResults((KakaoBlogSearchResponse) data);
+        } else if (data instanceof NaverBlogSearchResponse) {
+            return getSearchResults((NaverBlogSearchResponse) data);
+        } else {
+            throw new CustomException("지원하지 않는 검색 API 플랫폼입니다.", CustomCommonResponseCodes.ERROR.getNumber());
+        }
     }
 
     /**
@@ -121,7 +139,10 @@ public class SearchService {
      * @return
      */
     private List<SearchResultDto> getSearchResults(NaverBlogSearchResponse searchResponse) {
-        return null;
+        return searchResponse.getItems()
+                .stream()
+                .map(SearchResultDto::from)
+                .toList();
     }
 
 }
