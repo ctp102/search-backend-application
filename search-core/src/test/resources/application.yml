@@ -15,5 +15,6 @@ search:
       end-point: "https://dapi.kakao.com"
       api-key: "22875c991cab332f34000dff19b0af90"
     naver:
-      end-point: "BBB"
-      api-key: "CCC"
+      end-point: "https://openapi.naver.com"
+      client-id: "rdqIEQ2ryQPDQWcgA7Qa"
+      client-secret: "fXWPAamwdS"

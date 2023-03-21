@@ -25,7 +25,8 @@ public class SearchProperties {
     @Setter
     public static class Naver {
         private String endPoint;
-        private String apiKey;
+        private String clientId;
+        private String clientSecret;
     }
 
 }
