@@ -3,7 +3,6 @@ package io.search.core.search.dto;
 import io.search.core.search.response.KakaoBlogSearchResponse;
 import lombok.Data;
 
-// SearchResultDomain으로 넣어야 하나
 @Data
 public class SearchResultDto {
 
