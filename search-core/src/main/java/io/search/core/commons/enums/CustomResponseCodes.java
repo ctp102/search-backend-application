@@ -1,6 +1,6 @@
 package io.search.core.commons.enums;
 
-public interface CustomResultCodes {
+public interface CustomResponseCodes {
 
     int getNumber();
 

@@ -2,7 +2,7 @@ package io.search.core.commons.enums;
 
 import lombok.Getter;
 
-public enum CustomCommonResultCodes implements CustomResultCodes {
+public enum CustomCommonResponseCodes implements CustomResponseCodes {
 
     SUCCESS         (200, "Success"),
     BAD_REQUEST     (400, "Invalid parameter"),
@@ -19,7 +19,7 @@ public enum CustomCommonResultCodes implements CustomResultCodes {
     @Getter
     private final String message;
 
-    CustomCommonResultCodes(int number, String message) {
+    CustomCommonResponseCodes(int number, String message) {
         this.number = number;
         this.message = message;
     }

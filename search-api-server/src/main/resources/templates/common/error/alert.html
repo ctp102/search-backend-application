@@ -1,4 +1,17 @@
-<script>
-    alert('접근 권한이 없습니다.');
-    history.back();
-</script>
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <script th:inline="javascript">
+        let message = [[${message}]];
+        let historyBack = [[${historyBack}]];
+        let redirectUrl = [[${redirectUrl}]];
+
+        alert(message);
+
+        if (historyBack) {
+            history.back();
+        }
+
+        location.href = redirectUrl;
+    </script>
+</html>
+
