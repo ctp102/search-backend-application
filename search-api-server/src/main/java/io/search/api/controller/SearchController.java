@@ -24,6 +24,14 @@ public class SearchController {
 
     private final SearchService searchService;
 
+    /**
+     * 블로그 검색 페이지
+     *
+     * @param model      the model
+     * @param searchForm the search form
+     * @param pagingForm the paging form
+     * @return the string
+     */
     @ApiOperation(value = "블로그 검색 페이지", notes = "검색 결과 목록도 해당 페이지에 나타낸다.\ntotalCount Param은 페이징 처리를 하기 위함입니다.")
     @GetMapping("/search/list")
     public String searchList(Model model, @ModelAttribute SearchForm searchForm, @ModelAttribute PagingForm pagingForm) {

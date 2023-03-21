@@ -30,21 +30,48 @@ public class SearchService {
     private final NaverRestClient naverRestClient;
 
     /**
-     * 인기검색어 상위 10개 검색
+     * 인기 검색어 조회
+     *
      * @return
      */
     public List<SearchDomain> getHotTop10Search() {
         return searchRepository.findTop10HotSearchByOrderByCountDesc();
     }
 
+    /**
+     * 검색어 단 건 조회(by query, platform)
+     *
+     * @param query
+     * @param platform
+     * @return
+     */
     public SearchDomain getSearchByQueryAndPlatform(String query, PlatformType platform) {
         return searchRepository.findSearchByQueryAndPlatform(query, platform);
     }
 
-    public void insertSearch(SearchDomain searchDomain) {
-        searchRepository.save(searchDomain);
+    /**
+     * 검색어 저장
+     *
+     * @param searchDomain
+     * @param query
+     * @param platform
+     */
+    public void insertSearch(SearchDomain searchDomain, String query, PlatformType platform) {
+
+        if (searchDomain == null) {
+            searchRepository.save(new SearchDomain(query, platform));
+        } else {
+            searchDomain.increaseCount();
+        }
     }
 
+    /**
+     * 블로그 검색
+     *
+     * @param searchForm
+     * @param pagingForm
+     * @return
+     */
     public List<SearchResultDto> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
         SearchResponse<?> searchResponse = kakaoRestClient.searchBlog(searchForm, pagingForm);
@@ -64,16 +91,22 @@ public class SearchService {
             return new ArrayList<>();
         }
 
-        SearchDomain searchDomain = getSearchByQueryAndPlatform(searchForm.getQuery(), PlatformType.KAKAO);
-        if (searchDomain == null) {
-            insertSearch(new SearchDomain(searchForm.getQuery(), PlatformType.KAKAO));
-        } else {
-            searchDomain.increaseCount();
-        }
+        String query = searchForm.getQuery();
+        PlatformType platform = PlatformType.KAKAO;
+        
+        SearchDomain searchDomain = getSearchByQueryAndPlatform(query, platform);
+        
+        insertSearch(searchDomain, query, platform);
 
         return searchResults;
     }
 
+    /**
+     * 카카오 검색 API 결과를 SearchResultDto 리스트로 변환
+     *
+     * @param searchResponse
+     * @return
+     */
     private List<SearchResultDto> getSearchResults(KakaoBlogSearchResponse searchResponse) {
         return searchResponse.getDocuments()
                 .stream()
@@ -81,6 +114,12 @@ public class SearchService {
                 .toList();
     }
 
+    /** 
+     * 네이버 검색 API 결과를 SearchResultDto 리스트로 변환
+     *
+     * @param searchResponse
+     * @return
+     */
     private List<SearchResultDto> getSearchResults(NaverBlogSearchResponse searchResponse) {
         return null;
     }
