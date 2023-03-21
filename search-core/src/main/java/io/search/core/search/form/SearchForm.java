@@ -11,4 +11,8 @@ public class SearchForm {
     private String query;
     private String sort = SortType.ACCURACY.name().toLowerCase(); // [ recency(default), accuracy ]
 
+    public SearchForm(String query) {
+        this.query = query;
+    }
+
 }

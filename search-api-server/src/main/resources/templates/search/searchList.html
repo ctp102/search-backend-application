@@ -65,9 +65,13 @@
                                 <td class="col-md-3" th:utext="${searchResult.blogName}">블로그 이름</td>
                                 <td class="col-md-3" th:utext="${searchResult.title}">포스팅 제목</td>
                                 <td class="col-md-3" th:utext="${searchResult.contents}">포스팅 내용</td>
-                                <td class="col-md-3"><img th:src="${searchResult.thumbnail}" alt="thumbnail"></td>
                                 <td class="col-md-3">
-                                    <a th:href="@{${searchResult.postUrl}}" target="_blank" th:text="바로가기">포스팅 URL</a>
+                                    <a th:href="@{${searchResult.thumbnail}}" th:target="_blank">
+                                        <img th:src="${searchResult.thumbnail}" alt="thumbnail">
+                                    </a>
+                                </td>
+                                <td class="col-md-3">
+                                    <a th:href="@{${searchResult.postUrl}}" th:target="_blank" th:text="바로가기">포스팅 URL</a>
                                 </td>
                                 <td class="col-md-3" th:text="${#temporals.format(searchResult.createDt.toLocalDateTime(), 'yyyy-MM-dd HH:dd')}">포스팅 등록일</td>
                             </tr>
