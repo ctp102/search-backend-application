@@ -7,6 +7,7 @@ import io.search.core.commons.exception.CustomUnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 
@@ -14,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @ControllerAdvice("io.search")
-public class ExceptionHandler {
+public class ViewExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(CustomInvalidParameterException.class)
+    @ExceptionHandler
     public String invalidParameter(HttpServletRequest request, HandlerMethod handlerMethod, Model model, CustomInvalidParameterException e) {
         log.error("[Invalid-Parameter]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
@@ -31,7 +32,7 @@ public class ExceptionHandler {
         return "common/error/alert";
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(CustomUnauthorizedException.class)
+    @ExceptionHandler(CustomUnauthorizedException.class)
     public String unauthorized(HttpServletRequest request, HandlerMethod handlerMethod, Model model, CustomUnauthorizedException e) {
         log.error("[Unauthorized]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
@@ -46,7 +47,7 @@ public class ExceptionHandler {
         return "common/error/alert";
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(CustomAccessDeniedException.class)
+    @ExceptionHandler(CustomAccessDeniedException.class)
     public String accessDenied(HttpServletRequest request, HandlerMethod handlerMethod, Model model, CustomAccessDeniedException e) {
         log.error("[Access-Denied]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
@@ -61,7 +62,7 @@ public class ExceptionHandler {
         return "common/error/alert";
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(CustomException.class)
+    @ExceptionHandler(CustomException.class)
     public String commonError(HttpServletRequest request, HandlerMethod handlerMethod, CustomException e) {
         log.error("[Custom-Error]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
@@ -72,7 +73,7 @@ public class ExceptionHandler {
         return "common/error/internalServerError";
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public String internalServerError(HttpServletRequest request, HandlerMethod handlerMethod, Exception e) {
         log.error("[Internal-Server-Error]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
