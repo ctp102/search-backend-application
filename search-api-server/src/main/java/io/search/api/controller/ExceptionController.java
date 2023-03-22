@@ -1,5 +1,6 @@
 package io.search.api.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class ExceptionController implements ErrorController {
      * @return the string
      */
     @GetMapping("/error")
+    @ApiOperation(value = "예외 처리 컨트롤러", notes = "예외 처리 컨트롤러입니다.")
     public String handleError(HttpServletRequest request) {
 
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);

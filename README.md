@@ -8,6 +8,8 @@
 - [x] gradle 7.6.1
 - [x] h2 memory database
 - [x] thymeleaf
+- [x] swagger3.0
+  - /swagger-ui/index.html
 ----
 ### 사용 라이브러리
 - redisson 라이브러리
