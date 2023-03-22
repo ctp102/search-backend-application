@@ -19,10 +19,10 @@
                         </div>
                     </form>
                 </div>
-                <th:block th:if="${searchResults.isEmpty()}">
+                <th:block th:if="${searchDomains.isEmpty()}">
                     <small class="form-text text-muted">인기 검색어가 존재하지 않습니다.</small>
                 </th:block>
-                <th:block th:unless="${searchResults.isEmpty()}">
+                <th:block th:unless="${searchDomains.isEmpty()}">
                     <div>인기 검색어</div>
                     <div class="form-text text-muted" th:each="searchDomain, stat : ${searchDomains}">
                         <small class="form-text text-muted" th:text="|${stat.count}. ${searchDomain.getQuery()}(${searchDomain.getCount()})|"></small>

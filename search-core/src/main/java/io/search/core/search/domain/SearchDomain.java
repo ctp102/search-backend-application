@@ -18,6 +18,7 @@ public class SearchDomain extends BaseTimeEntity {
     @Column(name = "search_id")
     private Long id;
 
+    @Column(nullable = false)
     private String query;
 
     @Enumerated(EnumType.STRING)

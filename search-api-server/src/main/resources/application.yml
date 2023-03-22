@@ -14,6 +14,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 40
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -23,14 +25,11 @@ jpa:
     ddl-auto: create
   properties:
     hibernate:
-#        show_sql: true
       format_sql: true
-#        default_batch_fetch_size: 100
 
 logging:
   level:
     org.hibernate.SQL: debug
-#    org.hibernate.type: trace
 
 # Rest Template
 rest:

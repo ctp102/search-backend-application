@@ -22,7 +22,6 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Transactional
 public class SearchService {
 
     private final SearchRepository searchRepository;
@@ -40,6 +39,7 @@ public class SearchService {
      *
      * @return
      */
+    @Transactional(readOnly = true)
     public List<SearchDomain> getHotTop10Search() {
         return searchRepository.findTop10HotSearchByOrderByCountDesc();
     }
@@ -51,6 +51,7 @@ public class SearchService {
      * @param platform
      * @return
      */
+    @Transactional(readOnly = true)
     public SearchDomain getSearchByQueryAndPlatform(String query, PlatformType platform) {
         return searchRepository.findSearchByQueryAndPlatform(query, platform);
     }
@@ -71,6 +72,7 @@ public class SearchService {
      * @param pagingForm
      * @return
      */
+    @Transactional
     public List<SearchResultDto> searchBlog(SearchForm searchForm, PagingForm pagingForm) {
 
         String query = searchForm.getQuery();
