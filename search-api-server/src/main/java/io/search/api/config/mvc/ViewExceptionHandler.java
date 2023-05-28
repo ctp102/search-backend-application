@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice("io.search")
 public class ViewExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(CustomInvalidParameterException.class)
     public String invalidParameter(HttpServletRequest request, HandlerMethod handlerMethod, Model model, CustomInvalidParameterException e) {
         log.error("[Invalid-Parameter]", e);
         request.setAttribute("CUSTOM_EXCEPTION", e);
